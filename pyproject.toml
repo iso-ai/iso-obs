@@ -12,7 +12,7 @@ dev = [
     "ruff>=0.5",
     "black>=24.4",
     "mypy>=1.10",
-    "pytest>=8.0",
+    "pytest>=9.1.1",
 ]
 
 [tool.ruff]
