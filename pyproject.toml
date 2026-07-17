@@ -10,7 +10,7 @@ members = [
 [dependency-groups]
 dev = [
     "ruff>=0.5",
-    "black>=24.4",
+    "black>=26.5.1",
     "mypy>=1.10",
     "pytest>=8.0",
 ]
