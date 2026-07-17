@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iso-obs-schemas"
+version = "0.1.0"
+description = "Authoritative shared schema contract for Reliability Studio (Iso AI)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Iso AI" }]
+keywords = ["reliability", "observability", "schemas", "pydantic", "contract"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = ["pydantic>=2.7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://iso-obs.com"
+Repository = "https://github.com/iso-ai/iso-obs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/iso_obs_schemas"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/iso_obs_schemas", "README.md"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

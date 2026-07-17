@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "MetricDirection": {
+      "description": "Direction in which a metric improves.\n\nDetermines the sense of threshold comparisons and regression checks: a\n``maximize`` metric regresses when it drops, a ``minimize`` metric regresses\nwhen it rises.",
+      "enum": [
+        "maximize",
+        "minimize"
+      ],
+      "title": "MetricDirection",
+      "type": "string"
+    },
+    "MetricValueKind": {
+      "description": "Value type carried by a :class:`MetricValue`.",
+      "enum": [
+        "scalar",
+        "boolean",
+        "text"
+      ],
+      "title": "MetricValueKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Declaration of a metric computed for a suite's runs.",
+  "properties": {
+    "default_threshold": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Default pass/fail threshold, if any.",
+      "title": "Default Threshold"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "direction": {
+      "$ref": "#/$defs/MetricDirection",
+      "default": "maximize",
+      "description": "Direction in which the metric improves."
+    },
+    "key": {
+      "description": "Stable machine key, e.g. 'success_rate'.",
+      "title": "Key",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/MetricValueKind",
+      "description": "Value type this metric produces."
+    },
+    "name": {
+      "description": "Human-readable metric name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit of scalar values.",
+      "title": "Unit"
+    }
+  },
+  "required": [
+    "key",
+    "name",
+    "kind"
+  ],
+  "title": "MetricDefinition",
+  "type": "object"
+}

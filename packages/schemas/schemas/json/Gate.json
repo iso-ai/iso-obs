@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "ComparisonOperator": {
+      "description": "Comparison operator used by a :class:`GateRequirement`.",
+      "enum": [
+        "gte",
+        "lte",
+        "gt",
+        "lt",
+        "eq",
+        "ne"
+      ],
+      "title": "ComparisonOperator",
+      "type": "string"
+    },
+    "GateRequirement": {
+      "additionalProperties": false,
+      "description": "A single metric threshold that a gate requires to pass.",
+      "properties": {
+        "metric": {
+          "description": "Metric key the requirement is evaluated on.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/$defs/ComparisonOperator",
+          "description": "Comparison to apply."
+        },
+        "value": {
+          "description": "Right-hand side of the comparison.",
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric",
+        "operator",
+        "value"
+      ],
+      "title": "GateRequirement",
+      "type": "object"
+    },
+    "RegressionRequirement": {
+      "additionalProperties": false,
+      "description": "A limit on how much a metric may regress versus a baseline.",
+      "properties": {
+        "baseline_suite_execution_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SuiteExecutionId"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Suite execution to compare against; latest if omitted."
+        },
+        "max_absolute_regression": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum allowed absolute drop from baseline.",
+          "title": "Max Absolute Regression"
+        },
+        "max_relative_regression": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum allowed fractional drop from baseline, in [0, 1].",
+          "title": "Max Relative Regression"
+        },
+        "metric": {
+          "description": "Metric key checked for regression.",
+          "title": "Metric",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric"
+      ],
+      "title": "RegressionRequirement",
+      "type": "object"
+    },
+    "SuiteExecutionId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A pass/fail policy applied to a run or suite execution.\n\nA gate passes when every metric requirement is met and, if present, the\nregression requirement holds.",
+  "properties": {
+    "name": {
+      "description": "Human-readable gate name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "regression": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RegressionRequirement"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional regression check against a baseline."
+    },
+    "requirements": {
+      "description": "Metric thresholds that must all pass.",
+      "items": {
+        "$ref": "#/$defs/GateRequirement"
+      },
+      "title": "Requirements",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "Gate",
+  "type": "object"
+}

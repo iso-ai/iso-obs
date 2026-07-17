@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "MetricDirection": {
+      "description": "Direction in which a metric improves.\n\nDetermines the sense of threshold comparisons and regression checks: a\n``maximize`` metric regresses when it drops, a ``minimize`` metric regresses\nwhen it rises.",
+      "enum": [
+        "maximize",
+        "minimize"
+      ],
+      "title": "MetricDirection",
+      "type": "string"
+    },
+    "MetricValueKind": {
+      "description": "Value type carried by a :class:`MetricValue`.",
+      "enum": [
+        "scalar",
+        "boolean",
+        "text"
+      ],
+      "title": "MetricValueKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single measured metric value.\n\nExactly one of ``scalar_value``, ``boolean_value``, or ``text_value`` is set,\nselected by ``kind``. Scoring fields (``direction``, ``threshold``,\n``passed``) apply to scalar and boolean metrics.",
+  "properties": {
+    "boolean_value": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Boolean value when kind is 'boolean'.",
+      "title": "Boolean Value"
+    },
+    "direction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MetricDirection"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Direction in which this metric improves."
+    },
+    "key": {
+      "description": "Metric key this value corresponds to.",
+      "title": "Key",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/MetricValueKind",
+      "description": "Which value variant is populated."
+    },
+    "passed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Whether the value met its threshold, if scored.",
+      "title": "Passed"
+    },
+    "scalar_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Numeric value when kind is 'scalar'.",
+      "title": "Scalar Value"
+    },
+    "text_value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Text value when kind is 'text'.",
+      "title": "Text Value"
+    },
+    "threshold": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Threshold this value was scored against.",
+      "title": "Threshold"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Unit of a scalar value.",
+      "title": "Unit"
+    }
+  },
+  "required": [
+    "key",
+    "kind"
+  ],
+  "title": "MetricValue",
+  "type": "object"
+}

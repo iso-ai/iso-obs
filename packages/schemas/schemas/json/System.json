@@ -1,0 +1,79 @@
+{
+  "$defs": {
+    "ProjectId": {
+      "type": "string"
+    },
+    "SystemId": {
+      "type": "string"
+    },
+    "SystemType": {
+      "description": "Kind of system under evaluation.\n\nReliability Studio evaluates decision-making systems across the RL, control,\nand agentic spectrum; this enum names the broad category so metrics and\ndefault invariants can be specialized per type.",
+      "enum": [
+        "policy",
+        "agent",
+        "controller",
+        "planner",
+        "perception",
+        "pipeline",
+        "model",
+        "other"
+      ],
+      "title": "SystemType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A decision-making system under evaluation (policy, agent, controller...).",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "id": {
+      "$ref": "#/$defs/SystemId"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "name": {
+      "description": "Human-readable system name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "project_id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "system_type": {
+      "$ref": "#/$defs/SystemType",
+      "description": "Broad category of the system."
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "project_id",
+    "name",
+    "system_type"
+  ],
+  "title": "System",
+  "type": "object"
+}

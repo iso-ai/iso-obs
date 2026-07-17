@@ -1,0 +1,48 @@
+name: CI
+
+# Run the full quality gate on every push to a shared branch and on every PR.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel in-flight runs for the same ref when a newer commit arrives so that
+# superseded builds do not waste runner minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python (lint + type + test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # setup-uv provisions uv and caches the resolved environment keyed on the
+      # lockfile, which keeps `uv sync` fast across runs.
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # Pin the interpreter to the version the workspace targets (3.12).
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      # Resolve and install every workspace member from the committed lockfile.
+      - name: Sync workspace
+        run: uv sync --all-packages --frozen
+
+      - name: Ruff
+        run: uv run ruff check .
+
+      - name: Black
+        run: uv run black --check .
+
+      - name: Mypy
+        run: uv run mypy .
+
+      - name: Pytest
+        run: uv run pytest

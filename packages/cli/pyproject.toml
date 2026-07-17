@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iso-obs-cli"
+version = "0.1.0"
+description = "Command-line interface for Reliability Studio (Iso AI)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Iso AI" }]
+keywords = ["reliability", "observability", "cli", "evaluation"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = [
+    "typer>=0.12",
+    "rich>=13",
+    "iso-obs",
+    "iso-obs-schemas",
+]
+
+[project.scripts]
+iso = "iso_obs_cli.main:app"
+
+[project.urls]
+Repository = "https://github.com/iso-ai/iso-obs"
+
+[tool.uv.sources]
+iso-obs = { workspace = true }
+iso-obs-schemas = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/iso_obs_cli"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/iso_obs_cli", "README.md"]

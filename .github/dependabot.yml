@@ -1,0 +1,15 @@
+version: 2
+
+updates:
+  # Python dependencies resolved by the uv workspace (root pyproject + uv.lock).
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+
+  # Pinned action versions in .github/workflows.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly

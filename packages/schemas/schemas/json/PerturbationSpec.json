@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "PerturbationFamily": {
+      "description": "Family of perturbation applied to stress-test a system.\n\nA perturbation family names *how* the world is disturbed; concrete\nparameters live in :class:`iso_obs_schemas.core.PerturbationSpec`.",
+      "enum": [
+        "observation_noise",
+        "action_noise",
+        "sensor_dropout",
+        "latency",
+        "packet_loss",
+        "dynamics_shift",
+        "disturbance_force",
+        "initial_condition",
+        "reward_corruption",
+        "domain_randomization",
+        "adversarial",
+        "other"
+      ],
+      "title": "PerturbationFamily",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single perturbation applied within a scenario.\n\nPerturbations are embedded value objects (not standalone persisted entities),\nso they carry no id. They describe *how* the world is disturbed and *when*.",
+  "properties": {
+    "end_step": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Last step the perturbation is active (inclusive).",
+      "title": "End Step"
+    },
+    "family": {
+      "$ref": "#/$defs/PerturbationFamily",
+      "description": "Perturbation family."
+    },
+    "name": {
+      "description": "Short label for this perturbation instance.",
+      "title": "Name",
+      "type": "string"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Family-specific parameters, e.g. noise scale or force.",
+      "title": "Parameters",
+      "type": "object"
+    },
+    "start_step": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "First step the perturbation is active (inclusive).",
+      "title": "Start Step"
+    }
+  },
+  "required": [
+    "family",
+    "name"
+  ],
+  "title": "PerturbationSpec",
+  "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "EnvironmentId": {
+      "type": "string"
+    },
+    "EnvironmentVersionId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "An immutable, content-pinned build of an :class:`Environment`.",
+  "properties": {
+    "config": {
+      "additionalProperties": true,
+      "description": "Frozen environment configuration.",
+      "title": "Config",
+      "type": "object"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "environment_id": {
+      "$ref": "#/$defs/EnvironmentId"
+    },
+    "id": {
+      "$ref": "#/$defs/EnvironmentVersionId"
+    },
+    "image_uri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Container image or artifact for this build.",
+      "title": "Image Uri"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "version": {
+      "description": "Version label for the environment build.",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "environment_id",
+    "version"
+  ],
+  "title": "EnvironmentVersion",
+  "type": "object"
+}
