@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "Provenance": {
+      "description": "Whether a finding is directly observed or inferred from evidence.",
+      "enum": [
+        "observed",
+        "inferred"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single conclusion in a reliability report.\n\nA finding pairs a natural-language ``statement`` with the concrete runs that\nback it, so every claim in a report is traceable to evidence.",
+  "properties": {
+    "confidence": {
+      "default": 0.0,
+      "description": "Confidence in the finding, in [0, 1].",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "evidence": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Narrative or quantitative support for the claim.",
+      "title": "Evidence"
+    },
+    "observed_or_inferred": {
+      "$ref": "#/$defs/Provenance",
+      "default": "observed",
+      "description": "Whether the finding is directly observed or inferred."
+    },
+    "statement": {
+      "description": "The conclusion, in plain language.",
+      "title": "Statement",
+      "type": "string"
+    },
+    "supporting_run_ids": {
+      "description": "Runs that substantiate this finding.",
+      "items": {
+        "$ref": "#/$defs/RunId"
+      },
+      "title": "Supporting Run Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "statement"
+  ],
+  "title": "Finding",
+  "type": "object"
+}

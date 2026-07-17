@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "EvaluationSuiteId": {
+      "type": "string"
+    },
+    "ProjectId": {
+      "type": "string"
+    },
+    "ScenarioVersionId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A named collection of scenario versions evaluated together.\n\nRunning a suite produces a *suite execution* (identified by a\n:data:`~iso_obs_schemas.ids.SuiteExecutionId`) that groups the individual\n:class:`Run` results.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "id": {
+      "$ref": "#/$defs/EvaluationSuiteId"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "name": {
+      "description": "Human-readable suite name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "project_id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "scenario_version_ids": {
+      "description": "Scenario versions included in this suite.",
+      "items": {
+        "$ref": "#/$defs/ScenarioVersionId"
+      },
+      "title": "Scenario Version Ids",
+      "type": "array"
+    },
+    "seeds": {
+      "description": "Seeds to run each scenario with; one run per (scenario, seed).",
+      "items": {
+        "type": "integer"
+      },
+      "title": "Seeds",
+      "type": "array"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "project_id",
+    "name"
+  ],
+  "title": "EvaluationSuite",
+  "type": "object"
+}

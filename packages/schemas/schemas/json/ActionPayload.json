@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "description": "Payload for ``action.*`` events (requested / emitted / applied).",
+  "properties": {
+    "action": {
+      "additionalProperties": true,
+      "description": "The action produced by the system.",
+      "title": "Action",
+      "type": "object"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Time taken to produce the action, milliseconds.",
+      "title": "Latency Ms"
+    },
+    "policy_confidence": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional policy confidence in [0, 1].",
+      "title": "Policy Confidence"
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "title": "ActionPayload",
+  "type": "object"
+}

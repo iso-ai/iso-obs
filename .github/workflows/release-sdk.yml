@@ -1,0 +1,46 @@
+name: Release Python SDK
+
+# Publishing is driven by SemVer-style tags dedicated to the SDK so that the
+# CLI or schemas packages can be released independently under their own tags.
+on:
+  push:
+    tags:
+      - "sdk-v*"
+
+jobs:
+  build-and-publish:
+    name: Build and publish iso-obs to PyPI
+    runs-on: ubuntu-latest
+
+    # The "pypi" environment scopes the OIDC identity used for Trusted
+    # Publishing and is the place to attach required reviewers / protection
+    # rules for production releases.
+    environment: pypi
+
+    # id-token: write is REQUIRED for PyPI OIDC Trusted Publishing; without it
+    # the exchange for a short-lived upload token fails.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      # Build only the SDK member of the workspace. Artifacts are emitted to a
+      # dedicated ./dist so the publish step has an unambiguous source.
+      - name: Build iso-obs (sdist + wheel)
+        run: uv build --package iso-obs --out-dir dist
+
+      # Trusted Publishing must be configured on PyPI first:
+      #   PyPI project "iso-obs" -> Settings -> Publishing -> add a GitHub
+      #   publisher with owner/repo, workflow file "release-sdk.yml", and
+      #   environment "pypi". No API token is stored anywhere; the action
+      #   exchanges the OIDC token minted above for a one-time upload token.
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist

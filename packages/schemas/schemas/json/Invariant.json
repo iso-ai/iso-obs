@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "InvariantMode": {
+      "description": "How an :class:`Invariant` violation is treated.\n\n* ``hard`` \u2014 a violation fails the run.\n* ``soft`` \u2014 a violation is recorded but does not fail the run.\n* ``shadow`` \u2014 evaluated for observability only, never affects outcomes.",
+      "enum": [
+        "hard",
+        "soft",
+        "shadow"
+      ],
+      "title": "InvariantMode",
+      "type": "string"
+    },
+    "InvariantScope": {
+      "description": "Granularity at which an :class:`Invariant` is evaluated.",
+      "enum": [
+        "step",
+        "episode",
+        "run"
+      ],
+      "title": "InvariantScope",
+      "type": "string"
+    },
+    "Severity": {
+      "description": "Severity level for violations, findings, and system events.",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A property that must hold while a run executes.\n\nThe ``expression`` is a boolean predicate over trace state written in the\nplatform's invariant expression language; this contract stores it as text\nand does not evaluate it.",
+  "properties": {
+    "expression": {
+      "description": "Boolean predicate over trace state.",
+      "title": "Expression",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/InvariantMode",
+      "default": "hard",
+      "description": "How a violation is treated."
+    },
+    "name": {
+      "description": "Human-readable invariant name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "scope": {
+      "$ref": "#/$defs/InvariantScope",
+      "default": "step",
+      "description": "Granularity of evaluation."
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity",
+      "default": "critical",
+      "description": "Severity of a violation."
+    }
+  },
+  "required": [
+    "name",
+    "expression"
+  ],
+  "title": "Invariant",
+  "type": "object"
+}

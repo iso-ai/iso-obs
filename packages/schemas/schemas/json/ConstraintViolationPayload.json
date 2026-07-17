@@ -1,0 +1,51 @@
+{
+  "$defs": {
+    "Severity": {
+      "description": "Severity level for violations, findings, and system events.",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Payload for a ``constraint.violated`` event.",
+  "properties": {
+    "constraint": {
+      "description": "Name of the violated constraint.",
+      "title": "Constraint",
+      "type": "string"
+    },
+    "first_occurrence": {
+      "default": true,
+      "description": "Whether this is the run's first violation of this constraint.",
+      "title": "First Occurrence",
+      "type": "boolean"
+    },
+    "observed_value": {
+      "description": "Value that breached the constraint.",
+      "title": "Observed Value",
+      "type": "number"
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity",
+      "default": "warning",
+      "description": "Severity of the violation."
+    },
+    "threshold": {
+      "description": "Threshold that was breached.",
+      "title": "Threshold",
+      "type": "number"
+    }
+  },
+  "required": [
+    "constraint",
+    "observed_value",
+    "threshold"
+  ],
+  "title": "ConstraintViolationPayload",
+  "type": "object"
+}

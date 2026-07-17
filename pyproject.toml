@@ -1,0 +1,62 @@
+# Configuration for the public iso-obs Python workspace.
+
+[tool.uv.workspace]
+members = [
+    "packages/cli",
+    "packages/python-sdk",
+    "packages/schemas",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.5",
+    "black>=24.4",
+    "mypy>=1.10",
+    "pytest>=8.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = [".venv", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "D", "UP", "B"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["iso_obs", "iso_obs_cli", "iso_obs_schemas"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["D100", "D101", "D102", "D103", "D104"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = [
+    "packages/cli/src",
+    "packages/python-sdk/src",
+    "packages/schemas/src",
+]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+namespace_packages = true
+explicit_package_bases = true
+exclude = ["(^|/)(build|dist|\\.venv|tests)/"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra --strict-markers --strict-config"
+norecursedirs = [".venv", ".git", "build", "dist"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

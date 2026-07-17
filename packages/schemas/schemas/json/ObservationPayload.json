@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "description": "A reference to a stored artifact (image, video, tensor, file).\n\nArtifacts live in object storage (Spaces/S3); events and payloads carry a\nlightweight reference rather than the bytes themselves.",
+      "properties": {
+        "checksum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Content checksum for integrity/dedup.",
+          "title": "Checksum"
+        },
+        "kind": {
+          "description": "Logical artifact kind, e.g. 'frame' or 'video'.",
+          "title": "Kind",
+          "type": "string"
+        },
+        "media_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MIME type, e.g. 'image/png'.",
+          "title": "Media Type"
+        },
+        "size_bytes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Artifact size in bytes, if known.",
+          "title": "Size Bytes"
+        },
+        "uri": {
+          "description": "Storage URI of the artifact.",
+          "title": "Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "kind"
+      ],
+      "title": "ArtifactRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Payload for an ``observation.received`` event.",
+  "properties": {
+    "artifact_refs": {
+      "description": "References to heavy observation artifacts (e.g. frames).",
+      "items": {
+        "$ref": "#/$defs/ArtifactRef"
+      },
+      "title": "Artifact Refs",
+      "type": "array"
+    },
+    "observation": {
+      "additionalProperties": true,
+      "description": "The observation delivered to the system this step.",
+      "title": "Observation",
+      "type": "object"
+    }
+  },
+  "required": [
+    "observation"
+  ],
+  "title": "ObservationPayload",
+  "type": "object"
+}

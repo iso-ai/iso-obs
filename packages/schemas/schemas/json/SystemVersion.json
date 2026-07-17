@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "SystemId": {
+      "type": "string"
+    },
+    "SystemVersionId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "An immutable, content-pinned build of a :class:`System`.",
+  "properties": {
+    "artifact_uri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Location of the system artifact (weights/image).",
+      "title": "Artifact Uri"
+    },
+    "commit_sha": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source revision that produced this build.",
+      "title": "Commit Sha"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "id": {
+      "$ref": "#/$defs/SystemVersionId"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "system_id": {
+      "$ref": "#/$defs/SystemId"
+    },
+    "version": {
+      "description": "Version label, e.g. a semver or build tag.",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "system_id",
+    "version"
+  ],
+  "title": "SystemVersion",
+  "type": "object"
+}

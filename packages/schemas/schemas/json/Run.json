@@ -1,0 +1,165 @@
+{
+  "$defs": {
+    "EnvironmentVersionId": {
+      "type": "string"
+    },
+    "ProjectId": {
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string"
+    },
+    "RunStatus": {
+      "description": "Lifecycle state of a single evaluation run.\n\nThe states form a mostly linear progression from ``queued`` through\n``processing`` to a terminal ``completed``/``failed``/``cancelled`` state.",
+      "enum": [
+        "queued",
+        "provisioning",
+        "running",
+        "uploading",
+        "processing",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "title": "RunStatus",
+      "type": "string"
+    },
+    "ScenarioVersionId": {
+      "type": "string"
+    },
+    "SuiteExecutionId": {
+      "type": "string"
+    },
+    "SystemVersionId": {
+      "type": "string"
+    },
+    "WorkspaceId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single execution of one scenario version by one system version.\n\nA run is the atomic unit of evaluation. It references the exact pinned\nversions it exercised, records its lifecycle status and timing, and points\nat the trace it produced. All timestamps are timezone-aware UTC.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "environment_version_id": {
+      "$ref": "#/$defs/EnvironmentVersionId"
+    },
+    "failure_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Human-readable reason when status is failed.",
+      "title": "Failure Reason"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When the run reached a terminal state, if it has.",
+      "title": "Finished At"
+    },
+    "id": {
+      "$ref": "#/$defs/RunId"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "project_id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "scenario_version_id": {
+      "$ref": "#/$defs/ScenarioVersionId"
+    },
+    "seed": {
+      "description": "Random seed used for this run.",
+      "title": "Seed",
+      "type": "integer"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When execution began, if it has started.",
+      "title": "Started At"
+    },
+    "status": {
+      "$ref": "#/$defs/RunStatus",
+      "default": "queued",
+      "description": "Current lifecycle state."
+    },
+    "suite_execution_id": {
+      "$ref": "#/$defs/SuiteExecutionId",
+      "description": "Suite execution this run belongs to."
+    },
+    "system_version_id": {
+      "$ref": "#/$defs/SystemVersionId"
+    },
+    "trace_uri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Location of the raw event trace for this run.",
+      "title": "Trace Uri"
+    },
+    "worker_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Identifier of the worker that executed the run.",
+      "title": "Worker Id"
+    },
+    "workspace_id": {
+      "$ref": "#/$defs/WorkspaceId"
+    }
+  },
+  "required": [
+    "id",
+    "workspace_id",
+    "project_id",
+    "suite_execution_id",
+    "system_version_id",
+    "environment_version_id",
+    "scenario_version_id",
+    "seed"
+  ],
+  "title": "Run",
+  "type": "object"
+}

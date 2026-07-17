@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "ProjectId": {
+      "type": "string"
+    },
+    "WorkspaceId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A body of evaluation work inside a workspace.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "name": {
+      "description": "Human-readable project name.",
+      "title": "Name",
+      "type": "string"
+    },
+    "slug": {
+      "description": "URL-safe unique short name within the workspace.",
+      "title": "Slug",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "workspace_id": {
+      "$ref": "#/$defs/WorkspaceId"
+    }
+  },
+  "required": [
+    "id",
+    "workspace_id",
+    "name",
+    "slug"
+  ],
+  "title": "Project",
+  "type": "object"
+}

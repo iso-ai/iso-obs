@@ -1,0 +1,162 @@
+{
+  "$defs": {
+    "EnvironmentId": {
+      "type": "string"
+    },
+    "EnvironmentVersionId": {
+      "type": "string"
+    },
+    "EvaluationSuiteId": {
+      "type": "string"
+    },
+    "EventId": {
+      "type": "string"
+    },
+    "EventType": {
+      "description": "Kind of a trace event emitted during a run.\n\nThe values follow a ``<domain>.<verb>`` dotted convention so that consumers\ncan filter by prefix (e.g. every ``action.*`` event) without an explicit\ngrouping enum.",
+      "enum": [
+        "run.started",
+        "run.completed",
+        "run.failed",
+        "environment.reset",
+        "observation.received",
+        "state.recorded",
+        "action.requested",
+        "action.emitted",
+        "action.applied",
+        "reward.received",
+        "metric.recorded",
+        "invariant.violated",
+        "constraint.violated",
+        "system.warning",
+        "system.error",
+        "environment.event",
+        "artifact.created",
+        "annotation.created"
+      ],
+      "title": "EventType",
+      "type": "string"
+    },
+    "ProjectId": {
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string"
+    },
+    "ScenarioId": {
+      "type": "string"
+    },
+    "SystemId": {
+      "type": "string"
+    },
+    "SystemVersionId": {
+      "type": "string"
+    },
+    "WorkspaceId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A single event in a run's trace.\n\nField order mirrors the canonical trace event schema. The id fields reference\nthe same validated id types defined in :mod:`iso_obs_schemas.ids`, so an\nevent is guaranteed to be internally consistent with the core object model.",
+  "properties": {
+    "attributes": {
+      "additionalProperties": true,
+      "description": "Structured tags for filtering/indexing.",
+      "title": "Attributes",
+      "type": "object"
+    },
+    "environment_id": {
+      "$ref": "#/$defs/EnvironmentId"
+    },
+    "environment_version": {
+      "$ref": "#/$defs/EnvironmentVersionId",
+      "description": "Pinned environment version this event was produced in."
+    },
+    "event_id": {
+      "$ref": "#/$defs/EventId"
+    },
+    "event_type": {
+      "$ref": "#/$defs/EventType"
+    },
+    "monotonic_ns": {
+      "description": "Monotonic clock reading in nanoseconds for precise ordering.",
+      "title": "Monotonic Ns",
+      "type": "integer"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "description": "Event-type-specific body.",
+      "title": "Payload",
+      "type": "object"
+    },
+    "project_id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "run_id": {
+      "$ref": "#/$defs/RunId"
+    },
+    "scenario_id": {
+      "$ref": "#/$defs/ScenarioId"
+    },
+    "source": {
+      "description": "Emitter of the event, e.g. 'sdk' or 'worker'.",
+      "title": "Source",
+      "type": "string"
+    },
+    "step": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Environment step index, if applicable.",
+      "title": "Step"
+    },
+    "suite_id": {
+      "$ref": "#/$defs/EvaluationSuiteId"
+    },
+    "system_id": {
+      "$ref": "#/$defs/SystemId"
+    },
+    "system_version": {
+      "$ref": "#/$defs/SystemVersionId",
+      "description": "Pinned system version that produced this event."
+    },
+    "timestamp": {
+      "description": "Wall-clock time (timezone-aware UTC) the event occurred.",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "trace_version": {
+      "default": "1.0",
+      "description": "Version of the trace event envelope.",
+      "title": "Trace Version",
+      "type": "string"
+    },
+    "workspace_id": {
+      "$ref": "#/$defs/WorkspaceId"
+    }
+  },
+  "required": [
+    "event_id",
+    "workspace_id",
+    "project_id",
+    "suite_id",
+    "run_id",
+    "system_id",
+    "system_version",
+    "environment_id",
+    "environment_version",
+    "scenario_id",
+    "monotonic_ns",
+    "event_type",
+    "source"
+  ],
+  "title": "BaseEvent",
+  "type": "object"
+}

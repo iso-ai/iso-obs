@@ -1,0 +1,135 @@
+{
+  "$defs": {
+    "Finding": {
+      "additionalProperties": false,
+      "description": "A single conclusion in a reliability report.\n\nA finding pairs a natural-language ``statement`` with the concrete runs that\nback it, so every claim in a report is traceable to evidence.",
+      "properties": {
+        "confidence": {
+          "default": 0.0,
+          "description": "Confidence in the finding, in [0, 1].",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Narrative or quantitative support for the claim.",
+          "title": "Evidence"
+        },
+        "observed_or_inferred": {
+          "$ref": "#/$defs/Provenance",
+          "default": "observed",
+          "description": "Whether the finding is directly observed or inferred."
+        },
+        "statement": {
+          "description": "The conclusion, in plain language.",
+          "title": "Statement",
+          "type": "string"
+        },
+        "supporting_run_ids": {
+          "description": "Runs that substantiate this finding.",
+          "items": {
+            "$ref": "#/$defs/RunId"
+          },
+          "title": "Supporting Run Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "ProjectId": {
+      "type": "string"
+    },
+    "Provenance": {
+      "description": "Whether a finding is directly observed or inferred from evidence.",
+      "enum": [
+        "observed",
+        "inferred"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "ReportId": {
+      "type": "string"
+    },
+    "RunId": {
+      "type": "string"
+    },
+    "SuiteExecutionId": {
+      "type": "string"
+    },
+    "WorkspaceId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A report summarizing the reliability of a suite execution.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "findings": {
+      "description": "Findings that make up the report.",
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "id": {
+      "$ref": "#/$defs/ReportId"
+    },
+    "project_id": {
+      "$ref": "#/$defs/ProjectId"
+    },
+    "suite_execution_id": {
+      "$ref": "#/$defs/SuiteExecutionId",
+      "description": "Suite execution this report summarizes."
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Executive summary of the report.",
+      "title": "Summary"
+    },
+    "title": {
+      "description": "Human-readable report title.",
+      "title": "Title",
+      "type": "string"
+    },
+    "workspace_id": {
+      "$ref": "#/$defs/WorkspaceId"
+    }
+  },
+  "required": [
+    "id",
+    "workspace_id",
+    "project_id",
+    "suite_execution_id",
+    "title"
+  ],
+  "title": "ReliabilityReport",
+  "type": "object"
+}
