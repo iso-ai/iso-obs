@@ -32,6 +32,10 @@ platform itself (web app, API, execution infrastructure) is a hosted product —
 models and simulator stay in your environment; the SDK sends only the telemetry and
 artifacts you authorize.
 
+The implementation target and cross-repository ownership rules are documented
+in [the SDK v0.1 specification](./docs/SDK_SPEC_V0.1.md) and
+[the coordination contract](./docs/COORDINATION.md).
+
 ## Quickstart
 
 ```python
