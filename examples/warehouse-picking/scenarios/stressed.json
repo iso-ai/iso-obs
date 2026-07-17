@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "name": "stressed",
+  "max_steps": 80,
+  "target_position": 1.0,
+  "object_mass_kg": 1.35,
+  "max_gripper_force_n": 18.0,
+  "perturbations": {
+    "observation_noise_std": 0.035,
+    "observation_delay_steps": 3,
+    "actuator_scale": 0.78
+  }
+}

@@ -36,6 +36,14 @@ The implementation target and cross-repository ownership rules are documented
 in [the SDK v0.1 specification](./docs/SDK_SPEC_V0.1.md) and
 [the coordination contract](./docs/COORDINATION.md).
 
+## Examples
+
+- [Warehouse picking](./examples/warehouse-picking/README.md) — a self-contained
+  physical-AI evaluation with observation delay/noise, actuator degradation,
+  safety constraints, and baseline/candidate policies.
+- [Gymnasium CartPole](./examples/gymnasium-cartpole/README.md) — instrumentation
+  of an existing control loop with sensor noise and delayed actions.
+
 ## Quickstart
 
 ```python
