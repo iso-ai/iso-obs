@@ -1,0 +1,46 @@
+name: Documentation issue
+description: Report a problem, gap, or improvement for the documentation.
+title: "[Docs]: "
+labels: ["docs"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the Reliability Studio documentation. Clear
+        docs are a first-class deliverable, so every report helps.
+  - type: input
+    id: location
+    attributes:
+      label: Affected page or section
+      description: URL or path of the doc that has the problem (if applicable).
+      placeholder: "https://iso-obs.com/docs/sdk/quickstart"
+    validations:
+      required: false
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type of documentation issue
+      options:
+        - Incorrect or outdated information
+        - Missing content or a gap
+        - Unclear or confusing explanation
+        - Broken link or example
+        - Typo or formatting
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing?
+      description: Describe the problem or the gap you found.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: >
+        If you have an idea for how to fix or improve it, share it here.
+    validations:
+      required: false

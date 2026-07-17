@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://iso-obs.com/docs
+    about: Read the guides, API reference, and tutorials before filing an issue.
+  - name: Discussions
+    url: https://github.com/iso-ai/iso-obs/discussions
+    about: Ask questions, share ideas, and talk with the community.
+  - name: Security
+    url: mailto:security@iso-obs.com
+    about: Report vulnerabilities privately. Please do not open a public issue.

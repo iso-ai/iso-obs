@@ -1,0 +1,72 @@
+name: SDK / CLI question or problem
+description: >
+  Ask a usage question or report a problem with the iso-obs Python SDK or the
+  iso CLI.
+title: "[SDK]: "
+labels: ["question", "sdk"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form if you are using the **iso-obs** Python SDK or the **iso**
+        command-line tool and something is unclear, not working as expected, or
+        you need help getting started.
+
+        For a confirmed defect with a clean reproduction, the Bug report form is
+        a better fit. For anything security-related, email security@iso-obs.com.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Which surface?
+      options:
+        - Python SDK (iso-obs)
+        - CLI (iso)
+        - Both
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+      description: >
+        Describe your goal and the question or problem. Include what you have
+        already tried.
+      placeholder: >
+        I want to run a reliability sweep against my custom environment, but I'm
+        not sure how to register the adapter ...
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code or command
+      description: >
+        The snippet or command you are running. This is automatically formatted
+        as code.
+      render: python
+    validations:
+      required: false
+  - type: textarea
+    id: observed
+    attributes:
+      label: What did you observe?
+      description: Output, error messages, or the unexpected behavior you saw.
+      render: shell
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: SDK / CLI version
+      description: Output of `iso --version` or the installed `iso-obs` version.
+      placeholder: "iso-obs 0.4.2"
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      description: Output of `python --version`.
+      placeholder: "3.12.4"
+    validations:
+      required: false

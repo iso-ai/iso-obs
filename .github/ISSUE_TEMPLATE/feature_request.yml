@@ -1,0 +1,60 @@
+name: Feature request
+description: Suggest an idea or improvement for Reliability Studio.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Reliability Studio. Please describe the
+        problem you are trying to solve before jumping to a solution — it helps
+        us understand the underlying need.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: >
+        What problem are you facing? What are you unable to do today, and why
+        does it matter?
+      placeholder: I'm always frustrated when ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior or capability you would like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: >
+        What other approaches or workarounds have you tried or thought about?
+    validations:
+      required: false
+  - type: dropdown
+    id: product-area
+    attributes:
+      label: Product area
+      description: Which part of Reliability Studio does this relate to?
+      options:
+        - SDK
+        - CLI
+        - API
+        - Web app
+        - Docs
+        - Perturbation engine
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: >
+        Anything else that helps us understand the request — links, mockups,
+        related issues, or usage examples.
+    validations:
+      required: false
