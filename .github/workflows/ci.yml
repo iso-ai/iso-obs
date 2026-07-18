@@ -33,13 +33,13 @@ jobs:
         run: uv sync --all-packages --all-extras --frozen
 
       - name: Ruff
-        run: uv run ruff check .
+        run: uv run --no-sync ruff check .
 
       - name: Black
-        run: uv run black --check .
+        run: uv run --no-sync black --check .
 
       - name: Mypy
-        run: uv run mypy .
+        run: uv run --no-sync mypy .
 
       - name: Pytest
-        run: uv run pytest
+        run: uv run --no-sync pytest
