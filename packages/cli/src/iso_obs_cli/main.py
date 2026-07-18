@@ -5,7 +5,7 @@ from __future__ import annotations
 import typer
 
 from iso_obs_cli import __version__
-from iso_obs_cli.commands import auth, project, run, system
+from iso_obs_cli.commands import auth, dataset, evidence, project, run, system
 from iso_obs_cli.output import console
 
 app = typer.Typer(
@@ -17,6 +17,8 @@ app.add_typer(auth.app, name="auth")
 app.add_typer(project.app, name="project")
 app.add_typer(system.app, name="system")
 app.add_typer(run.app, name="run")
+app.add_typer(dataset.app, name="dataset")
+app.add_typer(evidence.app, name="evidence")
 
 
 @app.command()

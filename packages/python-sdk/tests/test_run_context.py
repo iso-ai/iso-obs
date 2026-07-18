@@ -72,6 +72,69 @@ def test_step_counter_advances_per_observation() -> None:
     assert steps == [None, 0, 0, 1, 1, 2, 2]
 
 
+def test_step_records_one_ordered_interaction() -> None:
+    api = FakeApi()
+    with make_context(api) as run:
+        run.step(
+            observation={"position": 0.4},
+            action={"force": 12.0},
+            reward=0.75,
+            state={"contact": False},
+            metrics={"distance_to_goal": 0.6, "safety_margin": 6.0},
+            latency_ms=2.5,
+        )
+        run.step(
+            observation={"position": 0.6},
+            action={"force": 10.0},
+        )
+
+    events = api.batches[0]
+    assert [event["event_type"] for event in events] == [
+        EventType.OBSERVATION_RECEIVED,
+        EventType.ACTION_EMITTED,
+        EventType.STATE_RECORDED,
+        EventType.METRIC_RECORDED,
+        EventType.METRIC_RECORDED,
+        EventType.METRIC_RECORDED,
+        EventType.OBSERVATION_RECEIVED,
+        EventType.ACTION_EMITTED,
+    ]
+    assert [event["step"] for event in events] == [0, 0, 0, 0, 0, 0, 1, 1]
+    assert events[1]["payload"]["latency_ms"] == 2.5
+    assert [event["payload"]["name"] for event in events[3:6]] == [
+        "reward",
+        "distance_to_goal",
+        "safety_margin",
+    ]
+
+
+def test_step_rejects_duplicate_reward_before_emitting() -> None:
+    api = FakeApi()
+    with make_context(api) as run:
+        with pytest.raises(ValueError, match="provided twice"):
+            run.step(
+                observation={"position": 0.4},
+                action={"force": 12.0},
+                reward=1.0,
+                metrics={"reward": 2.0},
+            )
+
+    assert api.batches == []
+
+
+def test_public_flush_delivers_without_completing() -> None:
+    api = FakeApi()
+    with make_context(api) as run:
+        run.log_observation({"x": 1})
+        run.flush()
+        assert [len(batch) for batch in api.batches] == [1]
+        assert api.completed == []
+        run.log_action({"u": 2})
+
+    assert [len(batch) for batch in api.batches] == [1, 1]
+    assert api.completed == [api.run_id]
+
+
 def test_batching_at_500_events() -> None:
     api = FakeApi()
     with make_context(api) as run:
@@ -153,3 +216,9 @@ def test_logging_before_enter_raises() -> None:
     context = make_context(FakeApi())
     with pytest.raises(RuntimeError, match="entered"):
         context.log_metric("reward", 1.0)
+
+
+def test_flush_before_enter_raises() -> None:
+    context = make_context(FakeApi())
+    with pytest.raises(RuntimeError, match="entered"):
+        context.flush()

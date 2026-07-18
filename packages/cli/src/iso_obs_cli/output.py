@@ -13,8 +13,16 @@ from rich.console import Console
 
 #: Exit code for API failures (unreachable host, error responses).
 EXIT_API_ERROR = 1
+#: Exit code for usage and local input failures.
+EXIT_INPUT_ERROR = 2
 #: Exit code for missing or rejected credentials.
-EXIT_AUTH_ERROR = 2
+EXIT_AUTH_ERROR = EXIT_INPUT_ERROR
+#: Exit code for a scientifically valid report requiring review.
+EXIT_REVIEW_REQUIRED = 3
+#: Exit code for demonstrated contamination.
+EXIT_CONTAMINATED = 4
+#: Exit code for a report that abstains because evidence is insufficient.
+EXIT_INSUFFICIENT_EVIDENCE = 5
 
 console = Console()
 error_console = Console(stderr=True)
@@ -25,8 +33,7 @@ def fail(message: str, *, code: int) -> NoReturn:
 
     Args:
         message: Human-readable, actionable error message.
-        code: Process exit code (:data:`EXIT_API_ERROR` or
-            :data:`EXIT_AUTH_ERROR`).
+        code: Process exit code appropriate to the failed operation.
 
     Raises:
         typer.Exit: Always, carrying ``code``.

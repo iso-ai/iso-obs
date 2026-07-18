@@ -22,7 +22,7 @@ dev = ["pytest>=8.0"]
 
 [project.urls]
 Homepage = "https://iso-obs.com"
-Repository = "https://github.com/iso-ai/iso-obs"
+Repository = "https://github.com/iso-ai/reliability"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/iso_obs_schemas"]

@@ -12,6 +12,7 @@ from sdk_doubles import BASE_URL, make_client
 from iso_obs import ReliabilityClient
 from iso_obs.client import DEFAULT_BASE_URL
 from iso_obs.exceptions import ApiError, AuthenticationError, NotFoundError
+from iso_obs.run import RunContext
 from iso_obs_schemas import IdPrefix, Project, SystemVersion, generate_id
 
 
@@ -84,6 +85,27 @@ class TestProjects:
 
         projects = make_client(handler).projects.list()
         assert [p.name for p in projects] == ["a", "b"]
+
+
+def test_client_run_builds_lazy_context() -> None:
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(500)
+
+    context = make_client(handler).run(
+        project="robot-arm",
+        system_version="policy-v17",
+        environment="warehouse-v4",
+        scenario="obstructed-pick",
+        seed=42,
+        metadata={"release_candidate": True},
+    )
+
+    assert isinstance(context, RunContext)
+    assert context.seed == 42
+    assert seen == []
 
 
 class TestSystems:

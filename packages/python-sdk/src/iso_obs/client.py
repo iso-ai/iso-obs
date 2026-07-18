@@ -17,12 +17,15 @@ than capturing it, so a test (or an advanced caller) can swap
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from iso_obs_schemas import BaseEvent, PerturbationSpec, Project, Run, SystemVersion
 
 from ._transport import Transport
 from .exceptions import AuthenticationError
+
+if TYPE_CHECKING:
+    from .run import RunContext
 
 # Default API root, used when neither the base_url argument nor the
 # ISO_OBS_BASE_URL environment variable is set.
@@ -225,3 +228,47 @@ class ReliabilityClient:
         self.projects = ProjectsResource(self)
         self.systems = SystemsResource(self)
         self.runs = RunsResource(self)
+
+    def run(
+        self,
+        *,
+        project: str,
+        system_version: str,
+        environment: str,
+        scenario: str,
+        seed: int,
+        perturbations: list[PerturbationSpec] | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> RunContext:
+        """Create a context for one instrumented evaluation run.
+
+        This convenience method is equivalent to constructing
+        :class:`iso_obs.run.RunContext` directly. It does not contact the API
+        until the returned context is entered.
+
+        Args:
+            project: Project the run belongs to (name or id).
+            system_version: System version under evaluation (label or id).
+            environment: Environment to run in (name or id).
+            scenario: Scenario to evaluate (name or id).
+            seed: Random seed for the run.
+            perturbations: Perturbations applied during the run.
+            metadata: Free-form run metadata.
+
+        Returns:
+            A context manager that creates, traces, and finishes the run.
+        """
+        # Import locally to avoid a module-level cycle: RunContext uses this
+        # client type to send lifecycle and event requests.
+        from .run import RunContext
+
+        return RunContext(
+            client=self,
+            project=project,
+            system_version=system_version,
+            environment=environment,
+            scenario=scenario,
+            seed=seed,
+            perturbations=perturbations,
+            metadata=metadata,
+        )

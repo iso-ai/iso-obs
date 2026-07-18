@@ -26,7 +26,7 @@ dependencies = [
 iso = "iso_obs_cli.main:app"
 
 [project.urls]
-Repository = "https://github.com/iso-ai/iso-obs"
+Repository = "https://github.com/iso-ai/reliability"
 
 [tool.uv.sources]
 iso-obs = { workspace = true }

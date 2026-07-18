@@ -36,6 +36,7 @@ from iso_obs_schemas import (
     EventType,
     IdPrefix,
     ObservationPayload,
+    PerturbationSpec,
     Run,
     generate_id,
 )
@@ -95,6 +96,8 @@ class RunContext:
         environment: str,
         scenario: str,
         seed: int,
+        perturbations: list[PerturbationSpec] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the context; no API call happens until ``__enter__``.
 
@@ -105,6 +108,8 @@ class RunContext:
             environment: Environment to run in (name or id).
             scenario: Scenario to evaluate (name or id).
             seed: Random seed for the run, exposed back via :attr:`seed`.
+            perturbations: Perturbations applied during the run.
+            metadata: Free-form run metadata.
         """
         self._client = client
         self._project = project
@@ -112,6 +117,8 @@ class RunContext:
         self._environment = environment
         self._scenario = scenario
         self._seed = seed
+        self._perturbations = list(perturbations or [])
+        self._metadata = dict(metadata or {})
         self._run: Run | None = None
         self._buffer: list[BaseEvent] = []
         # Step index of the current environment step; -1 until the first
@@ -135,6 +142,8 @@ class RunContext:
             environment=self._environment,
             scenario=self._scenario,
             seed=self._seed,
+            perturbations=self._perturbations,
+            metadata=self._metadata,
         )
         return self
 
@@ -225,6 +234,65 @@ class RunContext:
         """
         ref = ArtifactRef(uri=str(path_or_uri), kind="file")
         self._emit(EventType.ARTIFACT_CREATED, {"artifact": ref.model_dump()})
+
+    def step(
+        self,
+        *,
+        observation: Any,
+        action: Any,
+        reward: float | None = None,
+        state: Any | None = None,
+        metrics: Mapping[str, float] | None = None,
+        latency_ms: float | None = None,
+    ) -> None:
+        """Record one ordered environment interaction.
+
+        The observation advances the step counter once. Every event emitted
+        afterward is stamped with that same step in this deterministic order:
+        action, optional state, optional reward, then custom metrics in mapping
+        iteration order.
+
+        Args:
+            observation: Observation delivered to the evaluated system.
+            action: Action emitted by the evaluated system.
+            reward: Optional scalar reward for the transition.
+            state: Optional privileged environment-state snapshot.
+            metrics: Additional scalar measurements for the transition.
+            latency_ms: Time the system took to produce the action.
+
+        Raises:
+            ValueError: If both ``reward`` and a custom ``"reward"`` metric
+                are provided.
+            RuntimeError: If the run context has not been entered.
+        """
+        resolved_metrics = dict(metrics or {})
+        if reward is not None and "reward" in resolved_metrics:
+            raise ValueError(
+                "reward was provided twice; remove metrics['reward'] or "
+                "the reward argument"
+            )
+        self._require_run()
+        self.log_observation(observation)
+        self.log_action(action, latency_ms=latency_ms)
+        if state is not None:
+            self.log_state(state)
+        if reward is not None:
+            self.log_metric("reward", reward)
+        for name, value in resolved_metrics.items():
+            self.log_metric(name, value)
+
+    def flush(self) -> None:
+        """Synchronously deliver every currently buffered event.
+
+        Flushing does not complete the run. If delivery fails after transport
+        retries, pending events are written to :data:`SPILL_PATH` before the
+        API error is re-raised.
+
+        Raises:
+            ApiError: If the buffered events cannot be delivered.
+            RuntimeError: If the run context has not been entered.
+        """
+        self._flush(raise_on_failure=True)
 
     def _require_run(self) -> Run:
         """Return the created run, enforcing context-manager usage.
