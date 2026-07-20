@@ -163,6 +163,7 @@ class RegressionPromotionReview:
     requirement_results: tuple[PromotionRequirementResult, ...]
     unmet_requirements: tuple[PromotionRequirement, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.regression-promotion-review.v1"
 
     def to_json(self) -> str:
         """Serialize the review to canonical JSON.

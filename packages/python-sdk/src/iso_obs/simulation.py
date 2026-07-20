@@ -215,6 +215,23 @@ class CompatibilityReport:
     required_capabilities: tuple[SimulationCapability, ...]
     issues: tuple[CompatibilityIssue, ...]
     compatible: bool
+    report_schema_version: str = "iso-obs.simulation-compatibility-report.v1"
+
+    def to_json(self) -> str:
+        """Serialize the compatibility report to canonical JSON.
+
+        Returns:
+            Stable compact JSON with sorted object keys.
+        """
+        return _canonical_json(self)
+
+    def content_digest(self) -> str:
+        """Calculate the exact compatibility-report content digest.
+
+        Returns:
+            A prefixed lowercase SHA-256 digest.
+        """
+        return sha256_digest(self.to_json())
 
 
 class IncompatibleSimulationAdapterError(ValueError):

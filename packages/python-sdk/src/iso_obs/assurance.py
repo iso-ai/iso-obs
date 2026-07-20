@@ -410,6 +410,7 @@ class ReleaseAssuranceReport:
     restriction_reasons: tuple[AssuranceReasonCode, ...]
     disposition: AssuranceDisposition
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.release-assurance-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.

@@ -15,9 +15,10 @@ Requires Python 3.12+.
 
 ## Learn by example
 
-Start with the [SDK guide](docs/index.md) for a question-driven tour of the
-package, or run the [executable examples](examples/README.md) to see complete
-reliability studies:
+Start with the [SDK guide](https://iso-obs.com/docs/sdk) for a question-driven
+tour of the package, or browse the
+[executable examples](https://github.com/iso-ai/iso-obs/tree/main/packages/python-sdk/examples)
+to see complete reliability studies:
 
 - isolate a causal failure mechanism with matched perturbations;
 - map certified reliable, unresolved, and unreliable operating regions;
@@ -25,12 +26,13 @@ reliability studies:
 - curate mixed-mode datasets without treating neural predictions as truth;
 - preserve failures as replay capsules and promote them into regression tests.
 
-The [scientific-method guide](docs/scientific-method.md) explains the
-abstention, uncertainty, multiplicity, and evidence-scope rules behind these
-workflows.
+The
+[scientific-method guide](https://github.com/iso-ai/iso-obs/blob/main/packages/python-sdk/docs/scientific-method.md)
+explains the abstention, uncertainty, multiplicity, and evidence-scope rules
+behind these workflows.
 
 For a complete simulator-to-CI journey, follow the
-[warehouse autonomy integration walkthrough](docs/integration-workflow.md).
+[warehouse autonomy integration walkthrough](https://github.com/iso-ai/iso-obs/blob/main/packages/python-sdk/docs/integration-workflow.md).
 
 ## Quickstart
 
@@ -71,7 +73,7 @@ exception as the reason) and the exception is re-raised.
 | Setting | Argument | Environment variable | Default |
 |---|---|---|---|
 | API key | `api_key` | `ISO_OBS_API_KEY` | — (required) |
-| API root | `base_url` | `ISO_OBS_BASE_URL` | `https://api.iso-obs.com/api/v1` |
+| API root | `base_url` | `ISO_OBS_BASE_URL` | `https://reliability-studio-5cmy6.ondigitalocean.app/api/v1` |
 | Timeout | `timeout` | — | `30.0` seconds |
 
 `ReliabilityClient` raises `iso_obs.exceptions.AuthenticationError` when no
@@ -95,7 +97,8 @@ client.run(project=..., system_version=..., environment=...,
 ```
 
 All returned objects are the Pydantic models from
-[`iso-obs-schemas`](../schemas), the shared contract package.
+[`iso-obs-schemas`](https://pypi.org/project/iso-obs-schemas/), the shared
+contract package.
 
 ## Reliability semantics
 

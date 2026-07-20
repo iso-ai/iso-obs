@@ -24,7 +24,7 @@ classifiers = [
 dependencies = [
     "httpx>=0.27",
     "pydantic>=2.7",
-    "iso-obs-schemas",
+    "iso-obs-schemas>=0.1,<0.2",
 ]
 
 [project.optional-dependencies]
@@ -36,7 +36,9 @@ rosbag2 = ["mcap>=1.4,<2", "mcap-ros2-support>=0.5.7,<0.6", "pyyaml>=6,<7"]
 
 [project.urls]
 Homepage = "https://iso-obs.com"
-Repository = "https://github.com/iso-ai/reliability"
+Documentation = "https://iso-obs.com/docs/sdk"
+Repository = "https://github.com/iso-ai/iso-obs"
+Issues = "https://github.com/iso-ai/iso-obs/issues"
 
 [tool.uv.sources]
 iso-obs-schemas = { workspace = true }

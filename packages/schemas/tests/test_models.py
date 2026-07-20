@@ -128,6 +128,7 @@ def _sample_event() -> BaseEvent:
         constraint="joint_torque_limit",
         observed_value=42.5,
         threshold=40.0,
+        acceptance_operator="lte",
         severity=Severity.CRITICAL,
         first_occurrence=True,
     )
@@ -164,6 +165,7 @@ def test_constraint_violation_event_matches_spec_example() -> None:
     payload = ConstraintViolationPayload.model_validate(event.payload)
     assert payload.constraint == "joint_torque_limit"
     assert payload.observed_value > payload.threshold
+    assert payload.acceptance_operator == "lte"
     assert payload.severity is Severity.CRITICAL
 
 
@@ -173,6 +175,7 @@ def test_enum_membership() -> None:
     assert EventType.RUN_STARTED.value == "run.started"
     assert RunStatus.COMPLETED in RunStatus
     assert "unsafe_action" in {c.value for c in FailureCategory}
+    assert SystemType.WORLD_MODEL.value == "world_model"
     assert set(Severity) == {Severity.INFO, Severity.WARNING, Severity.CRITICAL}
 
 

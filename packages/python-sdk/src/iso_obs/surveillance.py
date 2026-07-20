@@ -246,6 +246,7 @@ class SequentialSurveillanceReport:
     crossed_signal_ids: tuple[str, ...]
     disposition: SurveillanceDisposition
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.sequential-surveillance-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.

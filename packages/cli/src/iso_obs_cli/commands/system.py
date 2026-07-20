@@ -8,6 +8,7 @@ import typer
 
 from iso_obs_cli import client as client_factory
 from iso_obs_cli.output import console
+from iso_obs_schemas import SystemType
 
 app = typer.Typer(help="Manage systems under evaluation.", no_args_is_help=True)
 
@@ -34,6 +35,13 @@ def register(
         str | None,
         typer.Option("--framework", help="Framework the system is built with."),
     ] = None,
+    system_type: Annotated[
+        SystemType,
+        typer.Option(
+            "--system-type",
+            help="Broad category used to specialize reliability analysis.",
+        ),
+    ] = SystemType.OTHER,
 ) -> None:
     """Register a system version with Reliability Studio."""
     api_key = client_factory.require_api_key()
@@ -46,6 +54,7 @@ def register(
             artifact_uri=artifact_uri,
             source_commit=source_commit,
             framework=framework,
+            system_type=system_type,
         )
     except Exception as exc:
         client_factory.exit_for_client_error(exc)

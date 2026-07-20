@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 from .divergence import PairingQuality
+from .evidence import _canonical_json, sha256_digest
 
 
 class RandomizationMethod(StrEnum):
@@ -126,6 +127,23 @@ class PairedEffectReport:
     pairing_quality_counts: tuple[tuple[PairingQuality, int], ...]
     random_seed: int
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.paired-effect-report.v1"
+
+    def to_json(self) -> str:
+        """Serialize estimates and diagnostics to canonical JSON.
+
+        Returns:
+            Stable compact JSON with sorted object keys.
+        """
+        return _canonical_json(self)
+
+    def content_digest(self) -> str:
+        """Calculate the exact paired-effect report content digest.
+
+        Returns:
+            A prefixed lowercase SHA-256 digest.
+        """
+        return sha256_digest(self.to_json())
 
 
 def analyze_paired_effect(

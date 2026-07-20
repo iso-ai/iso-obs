@@ -314,6 +314,7 @@ class CounterfactualEvidenceReport:
     meaningfully_supported: bool
     evidence_level: CounterfactualEvidenceLevel
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.counterfactual-evidence-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.
@@ -505,6 +506,7 @@ class MinimalCounterexampleReport:
     reproducing_run_ids: tuple[str, ...]
     trial_evidence_digests: tuple[str, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.minimal-counterexample-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.

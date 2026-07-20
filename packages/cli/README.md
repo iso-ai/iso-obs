@@ -58,7 +58,7 @@ iso version
 | Source | Purpose |
 | --- | --- |
 | `ISO_OBS_API_KEY` | API key; overrides the stored config. |
-| `ISO_OBS_BASE_URL` | API base URL; defaults to `https://api.iso-obs.com/api/v1`. |
+| `ISO_OBS_BASE_URL` | API base URL; defaults to `https://reliability-studio-5cmy6.ondigitalocean.app/api/v1`. |
 | `~/.config/iso-obs/config.toml` | Key stored by `iso auth login`. |
 
 Dataset audit commands emit canonical JSON to stdout, or to a new file with

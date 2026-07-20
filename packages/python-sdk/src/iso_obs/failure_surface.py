@@ -238,6 +238,7 @@ class FailureSurfaceReport:
     conclusion: FailureSurfaceConclusion
     limiting_stratum_ids: tuple[str, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.failure-surface-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.

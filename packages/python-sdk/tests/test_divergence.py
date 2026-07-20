@@ -55,6 +55,8 @@ def test_identical_trace_has_no_divergence() -> None:
     assert report.earliest_meaningful_divergence is None
     assert report.findings == ()
     assert report.compared_step_count == 5
+    assert '"report_schema_version":"iso-obs.divergence-report.v1"' in report.to_json()
+    assert report.content_digest().startswith("sha256:")
 
 
 def test_transient_difference_does_not_become_meaningful() -> None:

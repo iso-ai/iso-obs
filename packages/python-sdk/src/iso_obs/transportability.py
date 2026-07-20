@@ -403,6 +403,7 @@ class TransportValidationReport:
     violating_anchor_ids: tuple[str, ...]
     unquantified_discrepancy_source_names: tuple[str, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.transport-validation-report.v1"
 
     def to_json(self) -> str:
         """Serialize the report to canonical JSON.
@@ -755,6 +756,7 @@ class TransportApplicabilityReport:
     out_of_range_parameters: tuple[str, ...]
     applicability: TransportApplicability
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.transport-applicability-report.v1"
 
     def to_json(self) -> str:
         """Serialize the applicability report to canonical JSON.

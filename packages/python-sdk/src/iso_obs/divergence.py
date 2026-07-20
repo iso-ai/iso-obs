@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from types import MappingProxyType
 
+from .evidence import _canonical_json, sha256_digest
+
 
 class PairingQuality(StrEnum):
     """Strength of experimental control between two traces."""
@@ -180,6 +182,23 @@ class DivergenceReport:
     earliest_meaningful_divergence: DivergenceFinding | None
     findings: tuple[DivergenceFinding, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.divergence-report.v1"
+
+    def to_json(self) -> str:
+        """Serialize the divergence report to canonical JSON.
+
+        Returns:
+            Stable compact JSON with sorted object keys.
+        """
+        return _canonical_json(self)
+
+    def content_digest(self) -> str:
+        """Calculate the exact divergence-report content digest.
+
+        Returns:
+            A prefixed lowercase SHA-256 digest.
+        """
+        return sha256_digest(self.to_json())
 
 
 def _pairing_quality(

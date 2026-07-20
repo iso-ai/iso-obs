@@ -54,6 +54,10 @@ def test_zero_effect_is_reported_without_inventing_standardization() -> None:
     assert report.confidence_interval.lower == 0.0
     assert report.confidence_interval.upper == 0.0
     assert report.randomization_p_value == 1.0
+    assert (
+        '"report_schema_version":"iso-obs.paired-effect-report.v1"' in report.to_json()
+    )
+    assert report.content_digest().startswith("sha256:")
 
 
 def test_exact_sign_flip_test_and_effect_estimates() -> None:

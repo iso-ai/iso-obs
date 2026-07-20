@@ -182,6 +182,11 @@ def test_missing_capabilities_are_reported_before_compilation() -> None:
     )
 
     assert not report.compatible
+    assert (
+        '"report_schema_version":"iso-obs.simulation-compatibility-report.v1"'
+        in report.to_json()
+    )
+    assert report.content_digest().startswith("sha256:")
     assert {
         issue.subject
         for issue in report.issues

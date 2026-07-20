@@ -79,6 +79,15 @@ from .metrics import (
     MetricValueKind,
     RegressionRequirement,
 )
+from .rendering import (
+    ENVIRONMENT_RENDER_SCHEMA_VERSION,
+    RUN_PLAYBACK_SCHEMA_VERSION,
+    EnvironmentRenderManifest,
+    PlaybackSample,
+    RenderBoundary,
+    RenderPoint,
+    RunPlayback,
+)
 from .reports import Finding, Provenance, ReliabilityReport
 
 __version__ = "0.1.0"
@@ -106,6 +115,13 @@ __all__ = [
     "ReportId",
     "ApiKeyId",
     "WebhookId",
+    "ENVIRONMENT_RENDER_SCHEMA_VERSION",
+    "RUN_PLAYBACK_SCHEMA_VERSION",
+    "RenderPoint",
+    "RenderBoundary",
+    "EnvironmentRenderManifest",
+    "PlaybackSample",
+    "RunPlayback",
     # enums
     "EventType",
     "RunStatus",

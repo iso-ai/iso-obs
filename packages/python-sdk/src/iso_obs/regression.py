@@ -423,6 +423,23 @@ class RegressionGateReport:
     criterion_results: tuple[CriterionResult, ...]
     passed: bool
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.regression-gate-report.v1"
+
+    def to_json(self) -> str:
+        """Serialize the gate report to canonical JSON.
+
+        Returns:
+            Stable compact JSON with sorted object keys.
+        """
+        return _canonical_json(self)
+
+    def content_digest(self) -> str:
+        """Calculate the exact regression-gate report content digest.
+
+        Returns:
+            A prefixed lowercase SHA-256 digest.
+        """
+        return sha256_digest(self.to_json())
 
 
 def evaluate_regression_pack(

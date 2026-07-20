@@ -24,10 +24,10 @@ class StubProjects:
     def __init__(self, response: Project) -> None:
         """Store the canned response and start with no recorded calls."""
         self.response = response
-        self.calls: list[str] = []
+        self.calls: list[tuple[str, str | None]] = []
 
-    def create(self, name: str) -> Project:
-        self.calls.append(name)
+    def create(self, name: str, *, slug: str | None = None) -> Project:
+        self.calls.append((name, slug))
         return self.response
 
 
@@ -50,7 +50,7 @@ def test_init_creates_project_and_writes_marker(
     )
     result = runner.invoke(app, ["project", "init", "--name", "lunar-lander"])
     assert result.exit_code == 0
-    assert stub.calls == ["lunar-lander"]
+    assert stub.calls == [("lunar-lander", None)]
     marker = isolated_home / "iso-obs.toml"
     body = marker.read_text(encoding="utf-8")
     assert f'id = "{_PROJECT.id}"' in body

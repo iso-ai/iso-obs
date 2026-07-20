@@ -17,9 +17,24 @@ than capturing it, so a test (or an advanced caller) can swap
 from __future__ import annotations
 
 import os
+import re
 from typing import TYPE_CHECKING, Any
 
-from iso_obs_schemas import BaseEvent, PerturbationSpec, Project, Run, SystemVersion
+from iso_obs_schemas import (
+    BaseEvent,
+    Environment,
+    EnvironmentRenderManifest,
+    EnvironmentVersion,
+    EvaluationSuite,
+    PerturbationSpec,
+    Project,
+    Run,
+    Scenario,
+    ScenarioVersion,
+    System,
+    SystemType,
+    SystemVersion,
+)
 
 from ._transport import Transport
 from .exceptions import AuthenticationError
@@ -29,7 +44,7 @@ if TYPE_CHECKING:
 
 # Default API root, used when neither the base_url argument nor the
 # ISO_OBS_BASE_URL environment variable is set.
-DEFAULT_BASE_URL = "https://api.iso-obs.com/api/v1"
+DEFAULT_BASE_URL = "https://reliability-studio-5cmy6.ondigitalocean.app/api/v1"
 
 
 class _Resource:
@@ -52,16 +67,38 @@ class _Resource:
 class ProjectsResource(_Resource):
     """Operations on projects (``/projects``)."""
 
-    def create(self, name: str) -> Project:
+    def create(
+        self,
+        name: str,
+        *,
+        slug: str | None = None,
+        description: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> Project:
         """Create a project.
 
         Args:
             name: Human-readable project name.
+            slug: URL-safe project slug. Derived from ``name`` when omitted.
+            description: Optional project description.
+            metadata: Free-form project metadata.
 
         Returns:
             The created :class:`~iso_obs_schemas.Project`.
         """
-        data = self._transport.request("POST", "/projects", json={"name": name})
+        resolved_slug = slug or re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        if not resolved_slug:
+            resolved_slug = "project"
+        data = self._transport.request(
+            "POST",
+            "/projects",
+            json={
+                "name": name,
+                "slug": resolved_slug,
+                "description": description,
+                "metadata": metadata or {},
+            },
+        )
         return Project.model_validate(data)
 
     def list(self) -> list[Project]:
@@ -85,6 +122,7 @@ class SystemsResource(_Resource):
         artifact_uri: str | None = None,
         source_commit: str | None = None,
         framework: str | None = None,
+        system_type: SystemType | str = SystemType.OTHER,
         metadata: dict[str, Any] | None = None,
     ) -> SystemVersion:
         """Register a system version, creating the system if needed.
@@ -96,22 +134,174 @@ class SystemsResource(_Resource):
             artifact_uri: Location of the system artifact (weights/image).
             source_commit: Source revision that produced this build.
             framework: Framework the system is built with, e.g. ``"jax"``.
+            system_type: Broad category of the evaluated system.
             metadata: Free-form metadata stored with the version.
 
         Returns:
             The pinned :class:`~iso_obs_schemas.SystemVersion`.
         """
+        systems_data = self._transport.request("GET", f"/projects/{project}/systems")
+        systems = [System.model_validate(item) for item in systems_data]
+        system = next((item for item in systems if item.name == name), None)
+        if system is None:
+            created = self._transport.request(
+                "POST",
+                f"/projects/{project}/systems",
+                json={
+                    "name": name,
+                    "system_type": SystemType(system_type).value,
+                    "description": None,
+                    "metadata": {"framework": framework} if framework else {},
+                },
+            )
+            system = System.model_validate(created)
+        version_metadata = dict(metadata or {})
+        if framework is not None:
+            version_metadata.setdefault("framework", framework)
         body = {
-            "project": project,
-            "name": name,
             "version": version,
             "artifact_uri": artifact_uri,
-            "source_commit": source_commit,
-            "framework": framework,
-            "metadata": metadata or {},
+            "commit_sha": source_commit,
+            "metadata": version_metadata,
         }
-        data = self._transport.request("POST", "/systems:register", json=body)
+        data = self._transport.request(
+            "POST", f"/systems/{system.id}/versions", json=body
+        )
         return SystemVersion.model_validate(data)
+
+
+class EnvironmentsResource(_Resource):
+    """Operations on simulator, benchmark, and rig environments."""
+
+    def register(
+        self,
+        project_id: str,
+        name: str,
+        version: str,
+        *,
+        image_uri: str | None = None,
+        config: dict[str, Any] | None = None,
+        render_manifest: EnvironmentRenderManifest | None = None,
+        description: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> EnvironmentVersion:
+        """Register an environment and pin one immutable version.
+
+        Args:
+            project_id: Project that owns the environment.
+            name: Stable environment name.
+            version: Immutable build label.
+            image_uri: Optional simulator image reference.
+            config: Frozen simulator configuration.
+            render_manifest: Exact declared geometry rendered by paid Studio plans.
+            description: Optional environment description.
+            metadata: Additional structured metadata.
+
+        Returns:
+            The pinned environment version.
+        """
+        data = self._transport.request("GET", f"/projects/{project_id}/environments")
+        environments = [Environment.model_validate(item) for item in data]
+        environment = next((item for item in environments if item.name == name), None)
+        if environment is None:
+            created = self._transport.request(
+                "POST",
+                f"/projects/{project_id}/environments",
+                json={
+                    "name": name,
+                    "description": description,
+                    "metadata": metadata or {},
+                },
+            )
+            environment = Environment.model_validate(created)
+        frozen_config = dict(config or {})
+        if render_manifest is not None:
+            frozen_config["render_manifest"] = render_manifest.model_dump(mode="json")
+        version_data = self._transport.request(
+            "POST",
+            f"/environments/{environment.id}/versions",
+            json={
+                "version": version,
+                "image_uri": image_uri,
+                "config": frozen_config,
+                "metadata": metadata or {},
+            },
+        )
+        return EnvironmentVersion.model_validate(version_data)
+
+
+class ScenariosResource(_Resource):
+    """Operations on versioned evaluation scenarios."""
+
+    def register(
+        self,
+        environment_id: str,
+        name: str,
+        version: str,
+        *,
+        perturbations: list[PerturbationSpec] | None = None,
+        config: dict[str, Any] | None = None,
+        description: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> ScenarioVersion:
+        """Register a scenario and pin one immutable version."""
+        data = self._transport.request(
+            "GET", f"/environments/{environment_id}/scenarios"
+        )
+        scenarios = [Scenario.model_validate(item) for item in data]
+        scenario = next((item for item in scenarios if item.name == name), None)
+        if scenario is None:
+            created = self._transport.request(
+                "POST",
+                f"/environments/{environment_id}/scenarios",
+                json={
+                    "name": name,
+                    "description": description,
+                    "metadata": metadata or {},
+                },
+            )
+            scenario = Scenario.model_validate(created)
+        version_data = self._transport.request(
+            "POST",
+            f"/scenarios/{scenario.id}/versions",
+            json={
+                "version": version,
+                "perturbations": [
+                    item.model_dump(mode="json") for item in perturbations or []
+                ],
+                "config": config or {},
+                "metadata": metadata or {},
+            },
+        )
+        return ScenarioVersion.model_validate(version_data)
+
+
+class SuitesResource(_Resource):
+    """Operations on evaluation suites."""
+
+    def create(
+        self,
+        project_id: str,
+        name: str,
+        scenario_version_ids: list[str],
+        seeds: list[int],
+        *,
+        description: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> EvaluationSuite:
+        """Create an evaluation suite from pinned scenarios and seeds."""
+        data = self._transport.request(
+            "POST",
+            f"/projects/{project_id}/suites",
+            json={
+                "name": name,
+                "description": description,
+                "scenario_version_ids": scenario_version_ids,
+                "seeds": seeds,
+                "metadata": metadata or {},
+            },
+        )
+        return EvaluationSuite.model_validate(data)
 
 
 class RunsResource(_Resource):
@@ -227,6 +417,9 @@ class ReliabilityClient:
         )
         self.projects = ProjectsResource(self)
         self.systems = SystemsResource(self)
+        self.environments = EnvironmentsResource(self)
+        self.scenarios = ScenariosResource(self)
+        self.suites = SuitesResource(self)
         self.runs = RunsResource(self)
 
     def run(

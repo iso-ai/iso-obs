@@ -19,7 +19,7 @@ import tomllib
 from pathlib import Path
 
 #: Default API base URL, mirroring the SDK's fallback.
-DEFAULT_BASE_URL = "https://api.iso-obs.com/api/v1"
+DEFAULT_BASE_URL = "https://reliability-studio-5cmy6.ondigitalocean.app/api/v1"
 
 #: Name of the per-project marker file written by ``iso project init``.
 PROJECT_FILE_NAME = "iso-obs.toml"

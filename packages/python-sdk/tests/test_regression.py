@@ -149,6 +149,11 @@ def test_complete_expected_panel_passes_wilson_gate() -> None:
     assert report.criterion_results[0].matches == 50
     assert report.criterion_results[0].observed_match_rate == 1.0
     assert report.criterion_results[0].lower_confidence_bound >= 0.90
+    assert (
+        '"report_schema_version":"iso-obs.regression-gate-report.v1"'
+        in report.to_json()
+    )
+    assert report.content_digest().startswith("sha256:")
 
 
 def test_positive_control_must_be_observed_violating_an_invariant() -> None:

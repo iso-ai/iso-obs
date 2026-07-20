@@ -103,6 +103,7 @@ class SystemType(StrEnum):
     PERCEPTION = "perception"
     PIPELINE = "pipeline"
     MODEL = "model"
+    WORLD_MODEL = "world_model"
     OTHER = "other"
 
 

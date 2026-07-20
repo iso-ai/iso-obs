@@ -8,7 +8,7 @@ import pytest
 from typer.testing import CliRunner
 
 from iso_obs_cli.main import app
-from iso_obs_schemas import SystemVersion
+from iso_obs_schemas import SystemType, SystemVersion
 
 _PROJECT_ID = "prj_" + "c" * 24
 _SYSTEM_VERSION = SystemVersion(
@@ -36,6 +36,7 @@ class StubSystems:
         artifact_uri: str | None = None,
         source_commit: str | None = None,
         framework: str | None = None,
+        system_type: SystemType | str = SystemType.OTHER,
         metadata: dict[str, Any] | None = None,
     ) -> SystemVersion:
         self.calls.append(
@@ -46,6 +47,7 @@ class StubSystems:
                 "artifact_uri": artifact_uri,
                 "source_commit": source_commit,
                 "framework": framework,
+                "system_type": system_type,
                 "metadata": metadata,
             }
         )
@@ -98,6 +100,7 @@ def test_register_happy_path(
             "artifact_uri": "s3://models/lander-1.2.0.pt",
             "source_commit": "deadbeef",
             "framework": "torch",
+            "system_type": SystemType.OTHER,
             "metadata": None,
         }
     ]

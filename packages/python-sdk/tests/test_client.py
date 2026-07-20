@@ -74,7 +74,12 @@ class TestProjects:
         assert project.name == "robot-arm"
         assert seen[0].method == "POST"
         assert seen[0].url == f"{BASE_URL}/projects"
-        assert json.loads(seen[0].content) == {"name": "robot-arm"}
+        assert json.loads(seen[0].content) == {
+            "name": "robot-arm",
+            "slug": "robot-arm",
+            "description": None,
+            "metadata": {},
+        }
 
     def test_list(self) -> None:
         payloads = [_project_payload("a"), _project_payload("b")]
@@ -111,9 +116,11 @@ def test_client_run_builds_lazy_context() -> None:
 class TestSystems:
     def test_register(self) -> None:
         seen: list[httpx.Request] = []
+        system_id = generate_id(IdPrefix.SYSTEM)
+        project_id = generate_id(IdPrefix.PROJECT)
         payload = {
             "id": generate_id(IdPrefix.SYSTEM_VERSION),
-            "system_id": generate_id(IdPrefix.SYSTEM),
+            "system_id": system_id,
             "version": "v17",
             "commit_sha": "abc123",
             "artifact_uri": "s3://models/policy-v17",
@@ -122,6 +129,18 @@ class TestSystems:
 
         def handler(request: httpx.Request) -> httpx.Response:
             seen.append(request)
+            if request.method == "GET":
+                return httpx.Response(200, json=[])
+            if request.url.path.endswith("/systems"):
+                return httpx.Response(
+                    201,
+                    json={
+                        "id": system_id,
+                        "project_id": project_id,
+                        "name": "grasp-policy",
+                        "system_type": "other",
+                    },
+                )
             return httpx.Response(200, json=payload)
 
         version = make_client(handler).systems.register(
@@ -134,16 +153,15 @@ class TestSystems:
         )
         assert isinstance(version, SystemVersion)
         assert version.version == "v17"
-        assert seen[0].url == f"{BASE_URL}/systems:register"
-        body = json.loads(seen[0].content)
+        assert seen[0].url == f"{BASE_URL}/projects/robot-arm/systems"
+        assert seen[1].url == f"{BASE_URL}/projects/robot-arm/systems"
+        assert seen[2].url == f"{BASE_URL}/systems/{system_id}/versions"
+        body = json.loads(seen[2].content)
         assert body == {
-            "project": "robot-arm",
-            "name": "grasp-policy",
             "version": "v17",
             "artifact_uri": "s3://models/policy-v17",
-            "source_commit": "abc123",
-            "framework": "jax",
-            "metadata": {},
+            "commit_sha": "abc123",
+            "metadata": {"framework": "jax"},
         }
 
 

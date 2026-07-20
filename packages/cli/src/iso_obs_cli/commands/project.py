@@ -20,6 +20,13 @@ def init(
         str | None,
         typer.Option("--name", help="Project name; prompted for if omitted."),
     ] = None,
+    slug: Annotated[
+        str | None,
+        typer.Option(
+            "--slug",
+            help="URL-safe project slug; derived from the name when omitted.",
+        ),
+    ] = None,
 ) -> None:
     """Create a project and write ``iso-obs.toml`` in the current directory."""
     if name is None:
@@ -34,7 +41,7 @@ def init(
     api_key = client_factory.require_api_key()
     client = client_factory.build_client(api_key)
     try:
-        project = client.projects.create(name)
+        project = client.projects.create(name, slug=slug)
     except Exception as exc:
         client_factory.exit_for_client_error(exc)
     config.write_project_file(project_file, project_id=project.id, name=project.name)

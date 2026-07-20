@@ -323,6 +323,7 @@ class MultiplicityReport:
     rejected_count: int
     results: tuple[AdjustedHypothesis, ...]
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.multiplicity-report.v1"
 
     def to_json(self) -> str:
         """Serialize the multiplicity report to canonical JSON.

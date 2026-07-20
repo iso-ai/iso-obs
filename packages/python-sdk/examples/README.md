@@ -45,6 +45,22 @@ passing demo.
 | Can a learned detector help curate mixed-mode data? | [`mixed_mode_dataset_curation.py`](mixed_mode_dataset_curation.py) | Synchronized modalities, detector lineage, prediction sets, and human evidence | Reviewable transition candidates and an auditable label ledger |
 | Can a confirmed failure be reproduced? | [`failure_replay_capsule.py`](failure_replay_capsule.py) | Dataset, synchronization, simulator, recording, and claim evidence | A content-addressed replay capsule with explicit fidelity |
 | Can robotics recordings retain source lineage? | [`mcap_ros2_ingestion.py`](mcap_ros2_ingestion.py) and [`rosbag2_split_ingestion.py`](rosbag2_split_ingestion.py) | MCAP or split rosbag2 recordings | Dataset manifests and recording evidence without silent repair |
+| Can customer-hosted GPU training retain auditable lineage? | [`modal_gpu_world_model_workflow.py`](modal_gpu_world_model_workflow.py) | A generated trajectory manifest and a single customer-owned Modal L4 | A checkpoint, compute observations, sliced rollout evaluation, and versioned training evidence |
+
+The Modal example keeps provider and Studio credentials on opposite sides of
+the integration boundary. After configuring a short-lived Modal profile, run:
+
+```bash
+MODAL_PROFILE=iso-gpu-e2e \
+  uv run --with modal modal run \
+  packages/python-sdk/examples/modal_gpu_world_model_workflow.py \
+  --output-dir evidence/modal-gpu
+```
+
+The function is capped at one L4, one container, no function retries, and a
+15-minute timeout. Image hydration may still be attempted more than once by
+the provider, so monitor and abort repeated startup failures instead of
+assuming `retries=0` covers container initialization.
 
 ## The integration seam
 

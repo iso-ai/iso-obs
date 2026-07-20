@@ -17,7 +17,7 @@ the common event types and are used by producers and consumers to validate it.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -144,6 +144,10 @@ class ConstraintViolationPayload(BaseModel):
     constraint: str = Field(description="Name of the violated constraint.")
     observed_value: float = Field(description="Value that breached the constraint.")
     threshold: float = Field(description="Threshold that was breached.")
+    acceptance_operator: Literal["gte", "lte", "gt", "lt", "eq", "ne"] | None = Field(
+        default=None,
+        description="Comparison that must hold for the constraint to pass.",
+    )
     severity: Severity = Field(
         default=Severity.WARNING, description="Severity of the violation."
     )

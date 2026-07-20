@@ -212,6 +212,7 @@ class SimulationCampaignReport:
     release_evidence_eligible: bool
     regression_gate_report: RegressionGateReport | None
     limitations: tuple[str, ...]
+    report_schema_version: str = "iso-obs.simulation-campaign-report.v1"
 
     def to_json(self) -> str:
         """Serialize the campaign report to canonical JSON.
