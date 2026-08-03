@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "iso-obs-cli"
-version = "0.1.0"
-description = "Command-line interface for Reliability Studio (Iso AI)."
+version = "0.1.1"
+description = "Publish deployment-readiness evidence from simulations and robotics tests."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Apache-2.0" }

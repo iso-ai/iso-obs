@@ -100,3 +100,18 @@ def test_empty_body_returns_none() -> None:
         return httpx.Response(204)
 
     assert make_transport(httpx.MockTransport(handler)).request("POST", "/x") is None
+
+
+def test_request_identifies_sdk_without_background_telemetry() -> None:
+    """Attach SDK identity only to an explicit API request."""
+    observed_user_agent = ""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal observed_user_agent
+        observed_user_agent = request.headers["User-Agent"]
+        return httpx.Response(200, json={"ok": True})
+
+    make_transport(httpx.MockTransport(handler)).request("GET", "/ping")
+
+    assert observed_user_agent.startswith("iso-obs/")
+    assert "Python/" in observed_user_agent

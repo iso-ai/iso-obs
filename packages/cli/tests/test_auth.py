@@ -4,12 +4,19 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
-from iso_obs_cli import config
+from iso_obs_cli import api, config
 from iso_obs_cli.main import app
 
 _KEY = "key_secret1234abcd"
+
+
+@pytest.fixture(autouse=True)
+def verified_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep credential tests hermetic while exercising the login workflow."""
+    monkeypatch.setattr(api, "verify_api_key", lambda **_: None)
 
 
 def _config_path(home: Path) -> Path:
@@ -40,6 +47,23 @@ def test_login_rejects_empty_key(runner: CliRunner) -> None:
     """An empty key is rejected with the auth exit code."""
     result = runner.invoke(app, ["auth", "login", "--api-key", "   "])
     assert result.exit_code == 2
+
+
+def test_login_does_not_save_rejected_key(
+    runner: CliRunner,
+    isolated_home: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Leave no credential behind when server-side validation fails."""
+
+    def reject_key(**_: str) -> None:
+        raise api.ApiError("HTTP 401")
+
+    monkeypatch.setattr(api, "verify_api_key", reject_key)
+    result = runner.invoke(app, ["auth", "login", "--api-key", _KEY])
+
+    assert result.exit_code == 2
+    assert not _config_path(isolated_home).exists()
 
 
 def test_whoami_shows_masked_key_and_base_url(

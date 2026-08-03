@@ -9,14 +9,21 @@ standard library rather than inventing SDK methods.
 from __future__ import annotations
 
 import json
+import platform
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from typing import Any
 
+from iso_obs_cli import __version__
 from iso_obs_schemas import MetricValue, Run
 
 _TIMEOUT_SECONDS = 30.0
+
+
+def _user_agent() -> str:
+    """Identify CLI traffic already sent to Reliability Studio."""
+    return f"iso-obs-cli/{__version__} Python/{platform.python_version()}"
 
 
 class ApiError(Exception):
@@ -58,6 +65,7 @@ def _get_json(url: str, api_key: str) -> Any:
         headers={
             "Authorization": f"Bearer {api_key}",
             "Accept": "application/json",
+            "User-Agent": _user_agent(),
         },
     )
     try:
@@ -69,6 +77,13 @@ def _get_json(url: str, api_key: str) -> Any:
         raise ApiUnreachableError(f"cannot reach {url}: {exc.reason}") from exc
     except json.JSONDecodeError as exc:
         raise ApiError(f"{url} returned a non-JSON body") from exc
+
+
+def verify_api_key(*, api_key: str, base_url: str) -> None:
+    """Verify a key with a minimal authenticated project-list request."""
+    document = _get_json(f"{base_url.rstrip('/')}/projects", api_key)
+    if not isinstance(document, list):
+        raise ApiError("API returned an invalid project-list response")
 
 
 def submit_evidence_report(
@@ -112,6 +127,7 @@ def submit_evidence_report(
             "Authorization": f"Bearer {api_key}",
             "Accept": "application/json",
             "Content-Type": "application/json",
+            "User-Agent": _user_agent(),
         },
         method="POST",
     )

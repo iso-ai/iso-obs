@@ -6,7 +6,7 @@ from typing import Annotated
 
 import typer
 
-from iso_obs_cli import config
+from iso_obs_cli import api, config
 from iso_obs_cli.client import require_api_key
 from iso_obs_cli.output import EXIT_AUTH_ERROR, console, fail
 
@@ -26,12 +26,20 @@ def login(
     api_key = api_key.strip()
     if not api_key:
         fail("API key must not be empty.", code=EXIT_AUTH_ERROR)
+    try:
+        api.verify_api_key(api_key=api_key, base_url=config.resolve_base_url())
+    except api.ApiUnreachableError as exc:
+        fail(f"{exc}. The key was not saved.", code=EXIT_AUTH_ERROR)
+    except api.ApiError as exc:
+        fail(f"API key verification failed: {exc}", code=EXIT_AUTH_ERROR)
+
     # Merge instead of overwrite so future config keys survive a re-login.
     values = config.load_config()
     values["api_key"] = api_key
     config.save_config(values)
     console.print(
-        f"API key saved to [bold]{config.config_file()}[/bold] (permissions 600)."
+        "API key verified and activated.\n"
+        f"Saved to [bold]{config.config_file()}[/bold] (permissions 600)."
     )
 
 

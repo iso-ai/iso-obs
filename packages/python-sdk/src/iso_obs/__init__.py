@@ -17,6 +17,6 @@ from __future__ import annotations
 from .client import ReliabilityClient
 from .run import RunContext
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 __all__ = ["ReliabilityClient", "RunContext", "__version__"]

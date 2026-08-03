@@ -1,9 +1,11 @@
-# iso-obs — the Reliability Studio Python SDK
+# iso-obs — test whether autonomous systems are ready to deploy
 
-Instrument evaluation runs of autonomous systems — policies, controllers,
-agents — and stream their traces to [Reliability Studio](https://iso-obs.com).
-Every run preserves seed, versions, observations, actions, metrics, and
-artifacts, so failures are reproducible and every claim is traceable.
+Use the same reliability workflow for simulator evaluations, learned world
+models, robot policies, controllers, and autonomy tests. `iso-obs` finds where
+apparently successful behavior stops holding, preserves the evidence, and turns
+reproduced failures into regression targets before deployment. Every run keeps
+its seed, versions, observations, actions, metrics, and artifacts so results are
+inspectable rather than reduced to a single success-rate claim.
 
 ## Installation
 
@@ -12,6 +14,34 @@ pip install iso-obs
 ```
 
 Requires Python 3.12+.
+
+## Two-minute local report
+
+Generate a versioned failure-boundary report without an account or API key:
+
+```bash
+pip install iso-obs
+python -m iso_obs.quickstart
+```
+
+The command writes `failure-boundary-report.json` and prints its disposition,
+schema version, and content digest. The included trials are deterministic demo
+evidence for learning the workflow; replace them with measurements from your
+robot or simulator before making a production reliability claim.
+
+## Publish the report and activate Studio
+
+The local report answers a concrete question: **where does behavior stop being
+reliable under a controlled perturbation?** Publish that exact artifact to keep
+it reviewable and turn confirmed failures into regression evidence:
+
+1. [Create a Reliability Studio API key](https://iso-obs.studio/settings).
+2. Validate and store it: `iso auth login --api-key <YOUR_KEY>`.
+3. Submit the report: `iso evidence submit failure-boundary-report.json`.
+4. Open [Evidence in Studio](https://iso-obs.studio/evidence).
+
+`iso auth login` verifies the key before saving it. An invalid or unreachable
+credential is not written to disk.
 
 ## Learn by example
 

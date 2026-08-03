@@ -10,13 +10,20 @@ build-backend = "hatchling.build"
 
 [project]
 name = "iso-obs"
-version = "0.1.0"
-description = "Python SDK for Reliability Studio (Iso AI)."
+version = "0.1.2"
+description = "Test whether simulations, world models, and robots are ready for deployment."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Iso AI" }]
-keywords = ["reliability", "observability", "evaluation", "robotics", "sdk"]
+keywords = [
+    "reliability",
+    "simulation",
+    "world-models",
+    "evaluation",
+    "robotics",
+    "deployment",
+]
 classifiers = [
     "Programming Language :: Python :: 3.12",
     "Typing :: Typed",

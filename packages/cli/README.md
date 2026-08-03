@@ -12,7 +12,8 @@ pip install iso-obs-cli
 ## Usage
 
 ```bash
-# Store an API key (written to ~/.config/iso-obs/config.toml, mode 600).
+# Create a key at https://iso-obs.studio/settings, then verify and store it.
+# Invalid or unreachable credentials are not saved.
 iso auth login --api-key <YOUR_KEY>
 
 # Show the masked key and the API base URL in use.

@@ -125,6 +125,7 @@ def test_submit_posts_integrity_envelope_and_handles_idempotency(
     assert request.get_method() == "POST"
     assert request.get_header("Authorization") == "Bearer iso_test"
     assert request.get_header("Content-type") == "application/json"
+    assert request.get_header("User-agent").startswith("iso-obs-cli/")
     payload = captured["payload"]
     canonical = json.dumps(
         document,
@@ -178,8 +179,7 @@ def test_submit_accepts_schema_version_field(
         ),
         ('{"disposition":"review"}', "no report_schema_version"),
         (
-            '{"report_schema_version":"iso-obs.a.v1",'
-            '"schema_version":"iso-obs.b.v1"}',
+            '{"report_schema_version":"iso-obs.a.v1","schema_version":"iso-obs.b.v1"}',
             "conflicting",
         ),
         ('{"schema_version":"version-one"}', "must match"),

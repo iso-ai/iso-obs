@@ -17,7 +17,9 @@ without widening the public client signature.
 
 from __future__ import annotations
 
+import platform
 import time
+from importlib.metadata import PackageNotFoundError, version
 from typing import Any
 
 import httpx
@@ -32,6 +34,15 @@ from .exceptions import (
 
 # Total attempts per request (one initial try plus two retries).
 _MAX_ATTEMPTS = 3
+
+
+def _user_agent() -> str:
+    """Identify SDK traffic already sent to Reliability Studio."""
+    try:
+        sdk_version = version("iso-obs")
+    except PackageNotFoundError:
+        sdk_version = "development"
+    return f"iso-obs/{sdk_version} Python/{platform.python_version()}"
 
 
 def _exception_for(response: httpx.Response) -> ApiError:
@@ -102,7 +113,10 @@ class Transport:
         self._backoff_base = backoff_base
         self._http = httpx.Client(
             base_url=base_url,
-            headers={"Authorization": f"Bearer {api_key}"},
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "User-Agent": _user_agent(),
+            },
             timeout=timeout,
             transport=http_transport,
         )

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -212,7 +212,7 @@ wheels = [
 
 [[package]]
 name = "iso-obs"
-version = "0.1.0"
+version = "0.1.2"
 source = { editable = "packages/python-sdk" }
 dependencies = [
     { name = "httpx" },
@@ -258,7 +258,7 @@ provides-extras = ["dev", "mcap", "mcap-ros2", "parquet", "rosbag2"]
 
 [[package]]
 name = "iso-obs-cli"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "packages/cli" }
 dependencies = [
     { name = "iso-obs" },
