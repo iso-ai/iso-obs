@@ -258,7 +258,7 @@ provides-extras = ["dev", "mcap", "mcap-ros2", "parquet", "rosbag2"]
 
 [[package]]
 name = "iso-obs-cli"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/cli" }
 dependencies = [
     { name = "iso-obs" },
